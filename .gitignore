@@ -1,0 +1,9 @@
+node_modules/
+.next/
+venv/
+__pycache__/
+.env
+dist/
+.DS_Store
+swarm_data.json
+.env
