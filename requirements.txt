@@ -1,0 +1,4 @@
+# SymbioMarket Python swarm (install: pip install -r requirements.txt)
+python-dotenv>=1.0.0
+web3>=6.0.0
+langchain-deepseek>=0.1.0

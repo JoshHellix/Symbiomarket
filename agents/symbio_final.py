@@ -5,9 +5,10 @@ from dotenv import load_dotenv
 import os
 import asyncio
 import json
-import sys
-sys.path.insert(0, "/mnt/c/Users/dell/symbiomarket")
 
+from repo_paths import ensure_repo_root_on_syspath
+
+ensure_repo_root_on_syspath()
 
 load_dotenv()
 
@@ -30,7 +31,6 @@ async def cycle(num):
     print("🧠 Strategist:", json.dumps(strat, indent=2))
     await real_agent_pay("0x06579E128D3219634f370d03cCbd60b4b55e7811", 0.002, "strategy_decision")
 
-    # Real execution
     # Real execution
     result = await execute_trade(
         strat["action"],

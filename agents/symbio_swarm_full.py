@@ -1,8 +1,10 @@
 import os
 import asyncio
 import json
-import sys
-sys.path.insert(0, "/mnt/c/Users/dell/symbiomarket")
+
+from repo_paths import ensure_repo_root_on_syspath
+
+ensure_repo_root_on_syspath()
 
 from dotenv import load_dotenv
 from langchain_deepseek import ChatDeepSeek

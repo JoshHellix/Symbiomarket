@@ -25,6 +25,7 @@ import { GatewayBalanceDialog, type GatewayBalances } from "./gateway-balance-di
 import { WithdrawDialog } from "./withdraw-dialog";
 import { Info, Loader2 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import { toast } from "sonner";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 
@@ -57,6 +58,12 @@ export function TopBarGatewayControls() {
   }, []);
 
   useEffect(() => {
+    fetchBalances();
+
+    if (!isSupabaseConfigured()) {
+      return;
+    }
+
     const supabase = createClient();
     const channel = supabase
       .channel("balance-refresh")

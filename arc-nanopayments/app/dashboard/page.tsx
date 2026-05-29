@@ -54,6 +54,8 @@ import {
 import { shortenHash } from "@/lib/utils";
 import { usePaymentEvents } from "@/hooks/use-transactions";
 import { useWithdrawals } from "@/hooks/use-withdrawals";
+import { SymbioDashboardView } from "@/components/symbio-dashboard/symbio-dashboard-view";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 
 type SortDirection = "default" | "asc" | "desc";
 type SortField = "amount" | "date";
@@ -143,7 +145,8 @@ const PAGE_SIZE_OPTIONS = [10, 25, 50, 100] as const;
 export default function Dashboard() {
   const { events, loading: loadingPayments } = usePaymentEvents();
   const { withdrawals, loading: loadingWithdrawals } = useWithdrawals();
-  const [activeTab, setActiveTab] = useState("payments");
+  const [activeTab, setActiveTab] = useState("swarm");
+  const supabaseReady = isSupabaseConfigured();
   const [filter, setFilter] = useState("");
   const [sortField, setSortField] = useState<SortField | null>(null);
   const [sortDirection, setSortDirection] = useState<SortDirection>("default");
@@ -221,8 +224,18 @@ export default function Dashboard() {
     return result;
   }, [withdrawals, filter, sortField, sortDirection]);
 
-  const activeData = activeTab === "payments" ? filteredPayments : filteredWithdrawals;
-  const loading = activeTab === "payments" ? loadingPayments : loadingWithdrawals;
+  const activeData =
+    activeTab === "payments"
+      ? filteredPayments
+      : activeTab === "withdrawals"
+        ? filteredWithdrawals
+        : [];
+  const loading =
+    activeTab === "payments"
+      ? loadingPayments
+      : activeTab === "withdrawals"
+        ? loadingWithdrawals
+        : false;
   const totalPages = Math.max(1, Math.ceil(activeData.length / pageSize));
 
   // Clamp page if data shrinks (e.g. realtime delete)
@@ -240,43 +253,58 @@ export default function Dashboard() {
 
   return (
     <div className="max-w-6xl mx-auto">
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">Welcome back!</h1>
-        <p className="text-muted-foreground text-sm">
-          Monitor incoming nanopayments and manage withdrawals.
-        </p>
-      </div>
-
-      <div className="flex items-center gap-3 mb-4">
-        <Input
-          placeholder={
-            activeTab === "payments"
-              ? "Filter by tx hash, payer, or endpoint..."
-              : "Filter by tx hash, address, chain, or status..."
-          }
-          className="max-w-xs"
-          value={filter}
-          onChange={(e) => { setFilter(e.target.value); setPage(1); }}
-        />
-        <div className="flex items-center gap-2 ml-auto">
-          <span className="text-sm text-muted-foreground whitespace-nowrap">Rows per page</span>
-          <Select
-            value={String(pageSize)}
-            onValueChange={(v) => { setPageSize(Number(v)); setPage(1); }}
-          >
-            <SelectTrigger size="sm" className="w-[70px]">
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              {PAGE_SIZE_OPTIONS.map((size) => (
-                <SelectItem key={size} value={String(size)}>
-                  {size}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+      {activeTab !== "swarm" && (
+        <div className="mb-6">
+          <h1 className="text-2xl font-bold tracking-tight">Welcome back!</h1>
+          <p className="text-muted-foreground text-sm">
+            Monitor incoming nanopayments and manage withdrawals.
+          </p>
         </div>
-      </div>
+      )}
+
+      {activeTab !== "swarm" && (
+        <div className="flex items-center gap-3 mb-4">
+          <Input
+            placeholder={
+              activeTab === "payments"
+                ? "Filter by tx hash, payer, or endpoint..."
+                : "Filter by tx hash, address, chain, or status..."
+            }
+            className="max-w-xs"
+            value={filter}
+            onChange={(e) => { setFilter(e.target.value); setPage(1); }}
+          />
+          <div className="flex items-center gap-2 ml-auto">
+            <span className="text-sm text-muted-foreground whitespace-nowrap">Rows per page</span>
+            <Select
+              value={String(pageSize)}
+              onValueChange={(v) => { setPageSize(Number(v)); setPage(1); }}
+            >
+              <SelectTrigger size="sm" className="w-[70px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {PAGE_SIZE_OPTIONS.map((size) => (
+                  <SelectItem key={size} value={String(size)}>
+                    {size}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      )}
+
+      {!supabaseReady && (
+        <p className="text-sm text-muted-foreground mb-4 rounded-md border border-dashed p-3">
+          Supabase is not configured — use the <strong>Agent swarm</strong> tab or open{" "}
+          <a href="/swarm" className="text-primary hover:underline">
+            /swarm
+          </a>{" "}
+          (no login). For Circle nanopayments, set up <code className="text-xs bg-muted px-1 rounded">.env.local</code> per{" "}
+          <code className="text-xs bg-muted px-1 rounded">arc-nanopayments/README.md</code>.
+        </p>
+      )}
 
       <Tabs
         value={activeTab}
@@ -288,10 +316,15 @@ export default function Dashboard() {
           setSortDirection("default");
         }}
       >
-        <TabsList className="w-full">
+        <TabsList className="w-full flex-wrap h-auto gap-1 py-1">
+          <TabsTrigger value="swarm">Agent swarm</TabsTrigger>
           <TabsTrigger value="payments">Payments</TabsTrigger>
           <TabsTrigger value="withdrawals">Withdrawals</TabsTrigger>
         </TabsList>
+
+        <TabsContent value="swarm" className="mt-4">
+          <SymbioDashboardView embedded />
+        </TabsContent>
 
         <TabsContent value="payments">
           <div className="rounded-lg border overflow-hidden">
@@ -487,7 +520,7 @@ export default function Dashboard() {
       </Tabs>
 
       {/* Shared pagination controls */}
-      {!loading && activeData.length > 0 && (
+      {!loading && activeTab !== "swarm" && activeData.length > 0 && (
         <div className="flex items-center justify-between border-x border-b rounded-b-lg px-4 py-3 text-sm">
           <span className="text-muted-foreground">
             {activeData.length} {activeTab === "payments" ? "transaction" : "withdrawal"}{activeData.length !== 1 ? "s" : ""} total

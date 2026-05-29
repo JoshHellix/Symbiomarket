@@ -77,6 +77,11 @@ export default function SignIn() {
               {pending ? "Signing in..." : "Sign in"}
             </Button>
           </form>
+          <p className="text-center text-xs text-muted-foreground mt-4">
+            <a href="/swarm" className="text-primary hover:underline">
+              View agent swarm only (no Supabase)
+            </a>
+          </p>
         </CardContent>
       </Card>
     </main>

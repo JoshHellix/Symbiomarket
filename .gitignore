@@ -6,4 +6,11 @@ __pycache__/
 dist/
 .DS_Store
 swarm_data.json
-.env
+fhe_sync_state.json
+_ref-symbiomkt-dashboard/
+.tmp-symbio*
+assets/symbiomarket-x-profile-logo.png
+fhe-contracts/cache/
+fhe-contracts/artifacts/
+fhe-contracts/fhevmTemp/
+fhe-contracts/typechain-types/

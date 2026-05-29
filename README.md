@@ -48,6 +48,17 @@ This makes internal system activity transparent and traceable.
 
 ---
 
+## Confidential + Arc stack (built)
+
+| Layer | What |
+|-------|------|
+| **Swarm** | Python agents → `swarm_data.json` |
+| **FHE** | Zama `FHECounter` on Sepolia — `npm run sync:swarm` |
+| **Arc** | Public settlement pulse on Arc testnet |
+| **UI** | http://localhost:3000/swarm (no login) |
+
+**Grant / demo docs:** [`docs/GRANT_ONE_PAGER.md`](docs/GRANT_ONE_PAGER.md) · [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md) · [`docs/SYNC_COMMANDS.md`](docs/SYNC_COMMANDS.md) · [`docs/X402_NEXT.md`](docs/X402_NEXT.md)
+
 ## Arc Alignment
 
 SymbioMarket is designed for Arc-style environments:
@@ -56,7 +67,7 @@ SymbioMarket is designed for Arc-style environments:
 - low-cost settlement  
 - agent-native financial coordination  
 
-The system includes execution hooks compatible with Arc RPC, enabling transition from simulation to real settlement layers.
+Phase 2b adds **live Arc testnet settlement** after each FHE sync (`agents/arc_settle_swarm.py`).
 
 ---
 
@@ -81,16 +92,34 @@ forming a persistent economic system.
 
 ## Tech Stack
 
-- Python (Swarm Engine)
-- React / Next.js (Dashboard)
-- JSON streaming backend
-- Web3 / Arc RPC (execution layer)
+- Python (swarm engine)
+- Next.js / Circle arc-nanopayments (dashboard, x402 template)
+- Zama FHE (`fhe-contracts`, Sepolia)
+- Web3 (Arc testnet settlement)
+
+---
+
+## Run locally (minimal)
+
+```bash
+# Terminal 1 (WSL) — repo root
+python3 agents/swarm_api.py
+
+# Terminal 2 — arc-nanopayments
+npm run dev
+# → http://localhost:3000/swarm
+
+# Terminal 3 (PowerShell) — after a few swarm cycles
+cd fhe-contracts && npm run sync:swarm
+```
+
+Copy `.env.example` → `.env` at repo root; see `fhe-contracts/.env.example` for FHE keys.
 
 ---
 
 ## Demo
 
-👉 (Insert your Loom or YouTube link here)
+👉 Record using [`docs/DEMO_SCRIPT.md`](docs/DEMO_SCRIPT.md), then paste your Loom / YouTube link here.
 
 ---
 
@@ -102,10 +131,10 @@ forming a persistent economic system.
 
 ## Future Work
 
-- Full Arc-native settlement integration  
-- Real asset execution  
-- Multi-agent capital allocation  
-- Cross-agent coordination systems  
+- Loom demo + deployed `/swarm` for judges  
+- Full Circle x402 USDC on Arc (Supabase + `.env.local`)  
+- USDC transfer instead of settlement pulse self-tx  
+- More FHE fields (strategy score, treasury)  
 
 ---
 

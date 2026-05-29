@@ -1,0 +1,26 @@
+{
+  "name": "symbiomarket-fhe-contracts",
+  "private": true,
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "deploy:local": "hardhat run scripts/deploy.ts --network localhost",
+    "deploy:sepolia": "hardhat run scripts/deploy.ts --network sepolia",
+    "check:rpc": "hardhat run scripts/check-rpc.ts",
+    "increment:sepolia": "hardhat run scripts/increment-counter.ts --network sepolia",
+    "sync:swarm": "hardhat run scripts/sync-swarm-payment.ts --network sepolia",
+    "arc:settle": "python ../agents/arc_settle_swarm.py"
+  },
+  "devDependencies": {
+    "@fhevm/hardhat-plugin": "^0.4.2",
+    "@fhevm/solidity": "^0.11.1",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
+    "@types/node": "^22.10.0",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.13.4",
+    "hardhat": "^2.22.17",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2"
+  }
+}

@@ -18,6 +18,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
+import { isSupabaseConfigured } from "@/lib/supabase/config";
 import type { RealtimeChannel } from "@supabase/supabase-js";
 
 export type Withdrawal = {
@@ -36,6 +37,11 @@ export function useWithdrawals() {
   const channelRef = useRef<RealtimeChannel | null>(null);
 
   useEffect(() => {
+    if (!isSupabaseConfigured()) {
+      setLoading(false);
+      return;
+    }
+
     const supabase = createClient();
 
     async function fetchInitial() {

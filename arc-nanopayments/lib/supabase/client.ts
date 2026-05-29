@@ -17,8 +17,15 @@
  */
 
 import { createBrowserClient } from "@supabase/ssr";
+import { isSupabaseConfigured } from "./config";
 
 export function createClient() {
+  if (!isSupabaseConfigured()) {
+    throw new Error(
+      "Supabase is not configured. Copy arc-nanopayments/.env.example to .env.local and set NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY. For swarm-only viewing, open /swarm instead of /dashboard.",
+    );
+  }
+
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,

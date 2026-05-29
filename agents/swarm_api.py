@@ -3,6 +3,8 @@ import random
 import asyncio
 from datetime import datetime
 
+from repo_paths import swarm_data_path
+
 # ---------------------------
 # SWARM MEMORY (LEARNING STATE)
 # ---------------------------
@@ -104,11 +106,19 @@ def strategist_act(oracle_msg, market):
 # ---------------------------
 
 
-def executor_act(strategy_msg):
+def executor_act(strategy_msg, market):
+    """PnL per cycle — must vary even on 'hold' or the dashboard chart stays flat."""
     bias = strategy_msg["bias"]
-    pnl = bias * random.uniform(-1.0, 2.2)
+    micro = random.uniform(-0.12, 0.12)
+    price_drift = (market["price"] - 100) * 0.003
 
-    return pnl
+    if bias == 0:
+        # Hold: small inventory / fee drift (not zero)
+        pnl = micro + price_drift
+    else:
+        pnl = bias * random.uniform(0.2, 2.0) + micro + price_drift * 0.5
+
+    return round(pnl, 6)
 
 # ---------------------------
 # EVALUATOR (LEARNING LOOP)
@@ -136,6 +146,26 @@ def evaluator_act(pnl):
     }
 
 # ---------------------------
+# PAYMENT LABELS (dashboard / grant demo)
+# ---------------------------
+
+_PAYMENT_PURPOSES = (
+    "oracle_intel",
+    "strategy_relay",
+    "execution_conf",
+    "market_scan",
+    "data_sync",
+    "position_adj",
+)
+
+
+def _payment_purpose(strategist_decision: str) -> str:
+    if strategist_decision == "hold":
+        return random.choice(_PAYMENT_PURPOSES)
+    return strategist_decision
+
+
+# ---------------------------
 # MAIN SWARM LOOP
 # ---------------------------
 
@@ -145,7 +175,7 @@ async def update_cycle(cycle_num):
 
     oracle = oracle_act(market)
     strategist = strategist_act(oracle, market)
-    pnl = executor_act(strategist)
+    pnl = executor_act(strategist, market)
     evaluation = evaluator_act(pnl)
 
     cycle = {
@@ -166,11 +196,13 @@ async def update_cycle(cycle_num):
 
     # payments (swarm economy)
     payment = {
+        "tx_id": f"TX-{cycle_num:06d}",
         "from": random.choice(AGENTS),
         "to": random.choice(AGENTS),
         "amount": round(random.uniform(0.0005, 0.003), 6),
-        "purpose": strategist["decision"],
-        "time": datetime.now().strftime("%H:%M:%S")
+        "purpose": _payment_purpose(strategist["decision"]),
+        "time": datetime.now().strftime("%H:%M:%S"),
+        "fhe_status": "pending",
     }
 
     data["payments"].insert(0, payment)
@@ -179,25 +211,28 @@ async def update_cycle(cycle_num):
     # FINAL OUTPUT (dashboard contract)
     state = {
         "cycle": cycle_num,
+        "updated_at": datetime.now().isoformat(),
         "market": market,
         "agents": data["agents"],
+        "memory": dict(swarm_memory),
         "cycles": data["cycles"],
-        "payments": data["payments"]
+        "payments": data["payments"],
     }
 
-    output_path = "/mnt/c/Users/dell/symbiomarket/dashboard/backend/swarm_data.json"
+    output_path = swarm_data_path()
+    output_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with open(output_path, "w") as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2)
 
-    print(f"✅ Cycle {cycle_num} → swarm updated")
+    print(f"[ok] Cycle {cycle_num} -> swarm updated")
 
 
 # ---------------------------
 # RUN LOOP
 # ---------------------------
 async def main():
-    print("🚀 Swarm Intelligence Engine Started")
+    print("Swarm Intelligence Engine started")
 
     for i in range(999999):
         await update_cycle(i + 1)

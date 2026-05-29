@@ -1,0 +1,109 @@
+/**
+ * SymbioMarket neon dashboard — from symbiomarket-dashboard (scoped).
+ * Import only on /swarm and embedded swarm tab.
+ */
+
+.symbio-dashboard {
+  color-scheme: dark;
+  --background: oklch(0.08 0.02 280);
+  --foreground: oklch(0.85 0.03 155);
+  --card: oklch(0.12 0.02 280);
+  --card-foreground: oklch(0.85 0.03 155);
+  --popover: oklch(0.12 0.02 280);
+  --popover-foreground: oklch(0.85 0.03 155);
+  --primary: oklch(0.82 0.22 155);
+  --primary-foreground: oklch(0.1 0.02 280);
+  --secondary: oklch(0.55 0.2 300);
+  --secondary-foreground: oklch(0.95 0.02 300);
+  --muted: oklch(0.18 0.02 280);
+  --muted-foreground: oklch(0.55 0.02 155);
+  --accent: oklch(0.55 0.2 300);
+  --accent-foreground: oklch(0.95 0.02 300);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --border: oklch(0.25 0.04 280);
+  --input: oklch(0.2 0.03 280);
+  --ring: oklch(0.82 0.22 155);
+  --chart-1: oklch(0.82 0.22 155);
+  --chart-2: oklch(0.55 0.2 300);
+  --chart-3: oklch(0.7 0.15 200);
+  --chart-4: oklch(0.75 0.18 80);
+  --chart-5: oklch(0.65 0.22 330);
+  --radius: 0.5rem;
+  --neon-green: oklch(0.82 0.22 155);
+  --neon-purple: oklch(0.55 0.2 300);
+  --neon-cyan: oklch(0.75 0.15 200);
+  background-color: var(--background);
+  color: var(--foreground);
+}
+
+.symbio-dashboard .bg-background { background-color: var(--background); }
+.symbio-dashboard .bg-card { background-color: var(--card); }
+.symbio-dashboard .bg-muted\/30 { background-color: color-mix(in oklch, var(--muted) 30%, transparent); }
+.symbio-dashboard .bg-muted\/30:is(*) { background-color: oklch(0.18 0.02 280 / 0.3); }
+.symbio-dashboard .text-foreground { color: var(--foreground); }
+.symbio-dashboard .text-muted-foreground { color: var(--muted-foreground); }
+.symbio-dashboard .text-primary { color: var(--primary); }
+.symbio-dashboard .text-destructive { color: var(--destructive); }
+.symbio-dashboard .text-neon-green { color: var(--neon-green); }
+.symbio-dashboard .text-neon-purple { color: var(--neon-purple); }
+.symbio-dashboard .text-neon-cyan { color: var(--neon-cyan); }
+.symbio-dashboard .text-chart-5 { color: var(--chart-5); }
+.symbio-dashboard .border-border { border-color: var(--border); }
+.symbio-dashboard .border-neon-green\/30 { border-color: oklch(0.82 0.22 155 / 0.3); }
+.symbio-dashboard .border-neon-green\/20 { border-color: oklch(0.82 0.22 155 / 0.2); }
+.symbio-dashboard .border-neon-green\/10 { border-color: oklch(0.82 0.22 155 / 0.1); }
+.symbio-dashboard .bg-neon-green { background-color: var(--neon-green); }
+.symbio-dashboard .bg-neon-purple { background-color: var(--neon-purple); }
+.symbio-dashboard .bg-neon-cyan { background-color: var(--neon-cyan); }
+.symbio-dashboard .bg-neon-green\/5 { background-color: oklch(0.82 0.22 155 / 0.05); }
+.symbio-dashboard .bg-neon-green\/60 { background-color: oklch(0.82 0.22 155 / 0.6); }
+.symbio-dashboard .bg-neon-green\/70 { background-color: oklch(0.82 0.22 155 / 0.7); }
+.symbio-dashboard .bg-destructive\/60 { background-color: oklch(0.577 0.245 27.325 / 0.6); }
+.symbio-dashboard .bg-destructive\/70 { background-color: oklch(0.577 0.245 27.325 / 0.7); }
+.symbio-dashboard .bg-muted-foreground\/30 { background-color: oklch(0.55 0.02 155 / 0.3); }
+.symbio-dashboard .hover\:bg-neon-green\/70:hover { background-color: oklch(0.82 0.22 155 / 0.9); }
+.symbio-dashboard .hover\:bg-destructive\/70:hover { background-color: oklch(0.577 0.245 27.325 / 0.9); }
+.symbio-dashboard .bg-card\/50 { background-color: oklch(0.12 0.02 280 / 0.5); }
+.symbio-dashboard .border-border\/50 { border-color: oklch(0.25 0.04 280 / 0.5); }
+.symbio-dashboard .hover\:border-neon-green\/30:hover { border-color: oklch(0.82 0.22 155 / 0.3); }
+.symbio-dashboard .hover\:bg-neon-green\/5:hover { background-color: oklch(0.82 0.22 155 / 0.05); }
+.symbio-dashboard .group-hover\:bg-neon-green:is(.group:hover *) { background-color: var(--neon-green); }
+.symbio-dashboard .group-hover\:bg-destructive:is(.group:hover *) { background-color: var(--destructive); }
+
+@keyframes symbio-pulse-glow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+@keyframes symbio-flicker {
+  0%, 100% { opacity: 1; }
+  92% { opacity: 1; }
+  93% { opacity: 0.8; }
+  94% { opacity: 1; }
+  96% { opacity: 0.9; }
+  97% { opacity: 1; }
+}
+.symbio-dashboard .animate-pulse-glow { animation: symbio-pulse-glow 2s ease-in-out infinite; }
+.symbio-dashboard .animate-flicker { animation: symbio-flicker 4s linear infinite; }
+
+.symbio-dashboard .neon-border-green {
+  box-shadow: 0 0 5px oklch(0.82 0.22 155 / 0.3), 0 0 10px oklch(0.82 0.22 155 / 0.1),
+    inset 0 0 5px oklch(0.82 0.22 155 / 0.05);
+}
+.symbio-dashboard .neon-border-purple {
+  box-shadow: 0 0 5px oklch(0.55 0.2 300 / 0.3), 0 0 10px oklch(0.55 0.2 300 / 0.1),
+    inset 0 0 5px oklch(0.55 0.2 300 / 0.05);
+}
+.symbio-dashboard .neon-text-green {
+  text-shadow: 0 0 7px oklch(0.82 0.22 155 / 0.6), 0 0 15px oklch(0.82 0.22 155 / 0.3);
+}
+.symbio-dashboard .neon-text-purple {
+  text-shadow: 0 0 7px oklch(0.55 0.2 300 / 0.6), 0 0 15px oklch(0.55 0.2 300 / 0.3);
+}
+
+.symbio-dashboard ::-webkit-scrollbar { width: 4px; }
+.symbio-dashboard ::-webkit-scrollbar-track { background: oklch(0.1 0.02 280); }
+.symbio-dashboard ::-webkit-scrollbar-thumb {
+  background: oklch(0.82 0.22 155 / 0.3);
+  border-radius: 2px;
+}
