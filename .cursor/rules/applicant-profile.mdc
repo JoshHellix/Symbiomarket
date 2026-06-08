@@ -1,0 +1,27 @@
+---
+description: SymbioMarket founder and grant applicant identity (use for forms, decks, legal fields)
+alwaysApply: true
+---
+
+# Applicant profile (SymbioMarket)
+
+Use these values when drafting grants, Circle/Canteen forms, decks, bios, or legal entity fields. Do not invent a different name or country.
+
+| Field | Value |
+|-------|--------|
+| Legal name | **Ikoro Joshua Klau** |
+| Country | **Nigeria** |
+| Project / DBA | **SymbioMarket** |
+| Legal entity (unincorporated) | Ikoro Joshua Klau (individual / sole proprietor) |
+| Role | Founder & Lead Developer |
+| X | @SymbioMarket |
+| Repo | https://github.com/JoshHellix/Symbiomarket |
+| Launch thread | https://x.com/SymbioMarket/status/2060441414391959869 |
+
+**Email:** Not stored in repo — user provides per form; keep `[email]` placeholder unless user shares it in chat.
+
+**Incorporated:** No (solo, Nigeria).
+
+**Grant docs:** `docs/APPLICANT_PROFILE.md`, `docs/CIRCLE_GRANT_APPLICATION.md`, `docs/CANTEEN_GRANT_REFERRAL.md`
+
+**Post-hackathon weekly plan (build + post + RPC):** `docs/POST_HACKATHON_PUBLIC_BUILD.md`

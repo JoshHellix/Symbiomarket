@@ -2,6 +2,8 @@
 
 Run these in order. **Terminal 1–2** stay running; **Terminal 3** is one-shot per demo.
 
+**Arc RPC (post-hackathon):** Send txs via **Canteen/Agora RPC** (`ARC_RPC`) so activity ties to your Agora GitHub. Arc testnet hard fork **v0.7.1+** ([arc-node tags](https://github.com/circlefin/arc-node/tags); latest **v0.7.2**). Keep **`ARC_READ_RPC=https://rpc.testnet.arc.network`** for receipts (`arc_poll_tx.py`).
+
 ---
 
 ## Terminal 1 — Live swarm (WSL)

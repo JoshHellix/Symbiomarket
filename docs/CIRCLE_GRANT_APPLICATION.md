@@ -11,20 +11,20 @@ Official criteria: [circle.com/grant](https://www.circle.com/grant)
 
 | Field | Your value |
 |-------|------------|
-| First / last name | `[Your name]` |
-| Email | `[Your email]` |
-| Company legal entity | `[Legal name or "Individual / sole proprietor" if none]` |
+| First / last name | **Ikoro Joshua Klau** |
+| Email | `[Your grant email — same as Questbook]` |
+| Company legal entity | **Ikoro Joshua Klau** (individual / sole proprietor) |
 | DBA / project name | **SymbioMarket** |
 | Founder names, roles, bios | See template below |
-| Project website | `[GitHub repo URL or deployed /swarm URL when live]` e.g. `https://github.com/JoshHellix/Symbiomarket` |
-| X handle | `@[yourhandle]` |
-| Founders location | `Full Name, Founder/Developer, City, State/Province, Country` |
-| Business location | `[Your country]` |
-| Incorporated? | **No** (if solo) or **Yes** + jurisdiction |
+| Project website | `https://github.com/JoshHellix/Symbiomarket` (add deployed `/swarm` when live) |
+| X handle | **@SymbioMarket** |
+| Founders location | Ikoro Joshua Klau, Founder/Developer, `[City]`, Nigeria |
+| Business location | **Nigeria** |
+| Incorporated? | **No** |
 
 **Founder template (edit):**
 
-> **[Your Full Name]**, Founder & Lead Developer — Built SymbioMarket for the Arc hackathon: multi-agent swarm, Circle nanopayments fork, Zama FHE confidential ledger, and Arc testnet settlement. Background: [your real background — software, fintech, AI, etc.].
+> **Ikoro Joshua Klau**, Founder & Lead Developer (Nigeria) — Built SymbioMarket for the Arc hackathon: multi-agent swarm, Circle nanopayments fork, Zama FHE confidential ledger, and Arc testnet settlement. Background: [your real background — software, fintech, AI, etc.].
 
 ---
 
@@ -126,7 +126,7 @@ Propose **3 milestones** (USDC per milestone is negotiated with Circle — descr
 - Automate Arc settlement tied to each FHE sync (or every N swarm cycles).
 - Persist swarm + payment state (Supabase or serverless API) for judges/users without local Python.
 - Metrics on dashboard: volume, cycle PnL, payment count (already prototyped).
-- Load test: stable 24h swarm run with monitoring.
+- Lod test: stable 24h swarm run with monitoring.
 - **Success criteria:** 100+ documented agent payments + 10+ Arc settlement txs linked to cycles.
 
 ### Milestone 3 — Confidential agent treasury (Weeks 9–12)
@@ -202,7 +202,7 @@ If you don’t have a deck, use a **5-slide** outline:
 4. Circle integrations (Nanopayments, Gateway, Arc)  
 5. Milestones + team  
 
-Upload PDF to Drive → paste link. Or point to `docs/GRANT_ONE_PAGER.md` exported as PDF.
+Upload PDF to Drive → paste link. **Ready-made PDF:** `docs/SymbioMarket_Grant_Deck.pdf` (regenerate: `python scripts/generate_grant_deck_pdf.py`). Markdown source: `docs/GRANT_DECK_5_SLIDES.md`.
 
 ---
 
@@ -213,6 +213,12 @@ Upload PDF to Drive → paste link. Or point to `docs/GRANT_ONE_PAGER.md` export
 **If they want text:**
 
 > No actual, potential, or perceived conflict of interest. We are independent builders using Circle’s open-source nanopayments template and public Arc testnet; no employment or financial relationship with Circle.
+
+---
+
+## Post-hackathon (ongoing)
+
+Weekly build + public post + Canteen RPC cadence: **`docs/POST_HACKATHON_PUBLIC_BUILD.md`**
 
 ---
 
