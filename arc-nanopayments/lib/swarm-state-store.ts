@@ -1,13 +1,16 @@
 /**
- * Swarm + FHE state for local dev (JSON files) and Vercel (Upstash / Vercel KV).
+ * Swarm + FHE state: local JSON (dev) | Upstash KV | Vercel Blob (prod).
  */
 
+import { head, put } from "@vercel/blob";
 import { readFile } from "fs/promises";
 import { join } from "path";
 import { Redis } from "@upstash/redis";
 
 const SWARM_KEY = "symbio:swarm";
 const FHE_KEY = "symbio:fhe";
+const SWARM_BLOB = "symbio/swarm.json";
+const FHE_BLOB = "symbio/fhe.json";
 
 export const EMPTY_SWARM = {
   cycle: 0,
@@ -19,6 +22,10 @@ export const EMPTY_SWARM = {
 
 function hasKv(): boolean {
   return !!(process.env.KV_REST_API_URL?.trim() && process.env.KV_REST_API_TOKEN?.trim());
+}
+
+function hasBlob(): boolean {
+  return !!process.env.BLOB_READ_WRITE_TOKEN?.trim();
 }
 
 function redis(): Redis | null {
@@ -48,7 +55,28 @@ async function readLocalJson(filename: string): Promise<Record<string, unknown> 
   return null;
 }
 
-export type StateSource = "kv" | "local" | "empty";
+async function getBlobJson(pathname: string): Promise<Record<string, unknown> | null> {
+  if (!hasBlob()) return null;
+  try {
+    const meta = await head(pathname);
+    const res = await fetch(meta.url);
+    if (!res.ok) return null;
+    return (await res.json()) as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+}
+
+async function setBlobJson(pathname: string, data: unknown): Promise<void> {
+  if (!hasBlob()) throw new Error("BLOB_READ_WRITE_TOKEN not configured");
+  await put(pathname, JSON.stringify(data), {
+    access: "public",
+    addRandomSuffix: false,
+    contentType: "application/json",
+  });
+}
+
+export type StateSource = "kv" | "blob" | "local" | "empty";
 
 export async function getSwarmState(): Promise<{
   data: Record<string, unknown>;
@@ -60,16 +88,20 @@ export async function getSwarmState(): Promise<{
     if (cached && typeof cached === "object") {
       return { data: cached, source: "kv" };
     }
-    if (process.env.VERCEL === "1") {
-      return {
-        data: {
-          ...EMPTY_SWARM,
-          message:
-            "Waiting for swarm push — run python agents/swarm_api.py with SWARM_INGEST_URL set.",
-        },
-        source: "empty",
-      };
-    }
+  }
+
+  const blob = await getBlobJson(SWARM_BLOB);
+  if (blob) return { data: blob, source: "blob" };
+
+  if (process.env.VERCEL === "1") {
+    return {
+      data: {
+        ...EMPTY_SWARM,
+        message:
+          "Waiting for swarm push — link Redis or Blob on Vercel, then run swarm_api.py with SWARM_INGEST_URL.",
+      },
+      source: "empty",
+    };
   }
 
   const local = await readLocalJson("swarm_data.json");
@@ -87,17 +119,21 @@ export async function getFheState(): Promise<{
     if (cached && typeof cached === "object") {
       return { data: cached, source: "kv" };
     }
-    if (process.env.VERCEL === "1") {
-      return {
-        data: {
-          cycle: 0,
-          fhe: null,
-          arc: null,
-          message: "Waiting for FHE/Arc push from local sync:swarm.",
-        },
-        source: "empty",
-      };
-    }
+  }
+
+  const blob = await getBlobJson(FHE_BLOB);
+  if (blob) return { data: blob, source: "blob" };
+
+  if (process.env.VERCEL === "1") {
+    return {
+      data: {
+        cycle: 0,
+        fhe: null,
+        arc: null,
+        message: "Waiting for FHE/Arc push from local sync:swarm.",
+      },
+      source: "empty",
+    };
   }
 
   const local = await readLocalJson("fhe_sync_state.json");
@@ -110,16 +146,28 @@ export async function getFheState(): Promise<{
 
 export async function setSwarmState(data: unknown): Promise<void> {
   const r = redis();
-  if (!r) throw new Error("KV_REST_API_URL / KV_REST_API_TOKEN not configured");
-  await r.set(SWARM_KEY, data);
+  if (r) {
+    await r.set(SWARM_KEY, data);
+    return;
+  }
+  await setBlobJson(SWARM_BLOB, data);
 }
 
 export async function setFheState(data: unknown): Promise<void> {
   const r = redis();
-  if (!r) throw new Error("KV_REST_API_URL / KV_REST_API_TOKEN not configured");
-  await r.set(FHE_KEY, data);
+  if (r) {
+    await r.set(FHE_KEY, data);
+    return;
+  }
+  await setBlobJson(FHE_BLOB, data);
 }
 
 export function isRemoteIngestEnabled(): boolean {
-  return hasKv() && !!process.env.SWARM_INGEST_SECRET?.trim();
+  return (hasKv() || hasBlob()) && !!process.env.SWARM_INGEST_SECRET?.trim();
+}
+
+export function remoteStorageKind(): "kv" | "blob" | "none" {
+  if (hasKv()) return "kv";
+  if (hasBlob()) return "blob";
+  return "none";
 }

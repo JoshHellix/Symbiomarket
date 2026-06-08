@@ -9,7 +9,7 @@ import { isRemoteIngestEnabled, setFheState, setSwarmState } from "@/lib/swarm-s
 export async function POST(request: Request) {
   if (!isRemoteIngestEnabled()) {
     return NextResponse.json(
-      { error: "Ingest not configured (KV + SWARM_INGEST_SECRET required)" },
+      { error: "Ingest not configured (link Redis or Blob + SWARM_INGEST_SECRET)" },
       { status: 503 },
     );
   }

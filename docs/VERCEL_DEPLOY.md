@@ -28,10 +28,17 @@ npx vercel --prod
 
 ---
 
-## 2. Add Redis on Vercel (required for live data)
+## 2. Add storage on Vercel (required for live data)
 
-1. Vercel project → **Storage** → **Create Database** → **Upstash Redis** (or Marketplace → Upstash).
-2. Connect to this project — Vercel injects `KV_REST_API_URL` and `KV_REST_API_TOKEN`.
+**Option A — Vercel Blob (fastest)**  
+1. [Vercel project → Storage](https://vercel.com/hellix-nebulla-s-projects/arc-nanopayments/stores)  
+2. Connect store **`symbio-live`** (or create + link) to **Production**  
+3. Vercel adds `BLOB_READ_WRITE_TOKEN` automatically → redeploy  
+
+**Option B — Upstash Redis**  
+1. Accept [Upstash terms](https://vercel.com/hellix-nebulla-s-projects/~/integrations/accept-terms/upstash?source=cli)  
+2. `npx vercel integration add upstash/upstash-kv`  
+3. Connect resource → `KV_REST_API_URL` + `KV_REST_API_TOKEN`
 
 ---
 
