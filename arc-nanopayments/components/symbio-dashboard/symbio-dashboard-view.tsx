@@ -56,12 +56,20 @@ export function SymbioDashboardView({ embedded = false }: SymbioDashboardViewPro
         <div className="rounded-lg border border-[var(--border)] bg-[var(--card)] p-8 max-w-xl space-y-3">
           <p className="text-neon-green font-bold uppercase tracking-wider">No swarm data</p>
           <p className="text-sm text-muted-foreground">
-            Start the Python engine from the repo root (WSL):
+            <strong>Local:</strong> run the Python swarm from repo root.{" "}
+            <strong>Vercel:</strong> swarm runs on your machine and pushes state every cycle
+            (<code className="text-neon-green/80">SWARM_INGEST_URL</code> in{" "}
+            <code className="text-neon-green/80">.env</code>).
           </p>
           <pre className="text-xs border border-[var(--border)] rounded-md p-4 overflow-x-auto text-foreground">
-            {`cd /mnt/c/Users/dell/cursor-symbio/Symbiomarket
+            {`# WSL — local + optional Vercel push
+cd /mnt/c/Users/dell/cursor-symbio/Symbiomarket
 source venv/bin/activate
-python3 agents/swarm_api.py`}
+python3 agents/swarm_api.py
+
+# .env (for live Vercel /swarm)
+SWARM_INGEST_URL=https://YOUR_APP.vercel.app/api/swarm/ingest
+SWARM_INGEST_SECRET=your-secret`}
           </pre>
           {error && (
             <p className="text-xs text-destructive">API: {error}</p>
@@ -106,7 +114,8 @@ python3 agents/swarm_api.py`}
         </div>
         {!embedded && (
           <p className="mt-4 text-center text-[10px] text-muted-foreground">
-            Live from <code className="text-neon-green/80">swarm_data.json</code>
+            Live swarm feed
+            <span className="text-muted-foreground"> (local file or Vercel KV)</span>
             {" · "}
             <Link href="/" className="text-neon-green hover:underline">
               Circle USDC dashboard →

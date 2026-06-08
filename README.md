@@ -135,9 +135,12 @@ Copy `.env.example` → `.env` at repo root. Use **Canteen `ARC_RPC`** + public 
 
 ---
 
-## Live App (Optional)
+## Live App
 
-👉 (Insert deployed link if you have one)
+Deploy `/swarm` to Vercel — see [`docs/VERCEL_DEPLOY.md`](docs/VERCEL_DEPLOY.md).  
+Swarm runs on your machine; Vercel serves the dashboard via Redis push (`SWARM_INGEST_URL`).
+
+👉 **https://arc-nanopayments-dun.vercel.app/swarm** (enable Redis + `SWARM_INGEST_*` for live data — [`docs/VERCEL_DEPLOY.md`](docs/VERCEL_DEPLOY.md))
 
 ---
 

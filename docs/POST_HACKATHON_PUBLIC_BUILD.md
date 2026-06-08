@@ -197,7 +197,7 @@ Update [N]: [one sentence]. Latest Arc tx: [link]. Still building — hackathon 
 | Week | Mon build target | Wed on-chain | Fri public headline |
 |------|------------------|--------------|---------------------|
 | **1** | README: demo links, contract, last tx; fix anything broken on `main` | FHE sync + Arc settle on **Canteen RPC** | “Week 1: public repo + confirmed Arc tx” |
-| **2** | Deploy `/swarm` to Vercel (env for swarm API or static poll) | 2× settle if stable (2 cycles) | Screenshot + live URL |
+| **2** | Deploy `/swarm` to Vercel + Redis + swarm push — [`docs/VERCEL_DEPLOY.md`](VERCEL_DEPLOY.md) | 2× settle if stable (2 cycles) | Screenshot + live URL |
 | **3** | Auto-call `arc_settle_swarm` after `sync:swarm` (or documented one-liner script) | Settle tied to cycle id in UI | “Automated Arc pulse per cycle” |
 | **4** | x402: `generate-wallets` + one real testnet USDC payment (`docs/X402_NEXT.md`) | USDC-related Arc/Circle tx | “First real nanopayment on Arc stack” |
 

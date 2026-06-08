@@ -5,6 +5,12 @@ from datetime import datetime
 
 from repo_paths import swarm_data_path
 
+try:
+    from push_swarm_state import push_remote_state
+except ImportError:
+    def push_remote_state(swarm=None, include_fhe=True):
+        return False
+
 # ---------------------------
 # SWARM MEMORY (LEARNING STATE)
 # ---------------------------
@@ -225,7 +231,10 @@ async def update_cycle(cycle_num):
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(state, f, indent=2)
 
-    print(f"[ok] Cycle {cycle_num} -> swarm updated")
+    if push_remote_state(state):
+        print(f"[ok] Cycle {cycle_num} -> swarm updated + pushed to Vercel")
+    else:
+        print(f"[ok] Cycle {cycle_num} -> swarm updated")
 
 
 # ---------------------------

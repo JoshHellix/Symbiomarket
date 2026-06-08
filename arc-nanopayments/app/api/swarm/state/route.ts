@@ -4,31 +4,19 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import { readFile } from "fs/promises";
-import { join } from "path";
 import { NextResponse } from "next/server";
+import { getSwarmState } from "@/lib/swarm-state-store";
 
-const EMPTY_STATE = {
-  cycle: 0,
-  market: null,
-  agents: {} as Record<string, unknown>,
-  cycles: [] as unknown[],
-  payments: [] as unknown[],
-};
-
-function jsonNoStore(body: unknown) {
+function jsonNoStore(body: unknown, source?: string) {
   return NextResponse.json(body, {
-    headers: { "Cache-Control": "no-store, max-age=0" },
+    headers: {
+      "Cache-Control": "no-store, max-age=0",
+      ...(source ? { "X-Swarm-Source": source } : {}),
+    },
   });
 }
 
 export async function GET() {
-  const filePath = join(process.cwd(), "..", "swarm_data.json");
-  try {
-    const raw = await readFile(filePath, "utf-8");
-    const data = JSON.parse(raw) as Record<string, unknown>;
-    return jsonNoStore(data);
-  } catch {
-    return jsonNoStore(EMPTY_STATE);
-  }
+  const { data, source } = await getSwarmState();
+  return jsonNoStore(data, source);
 }

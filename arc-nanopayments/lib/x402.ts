@@ -17,8 +17,8 @@
  */
 
 import { BatchFacilitatorClient } from "@circle-fin/x402-batching/server";
-import { createClient } from "@supabase/supabase-js";
 import { NextRequest, NextResponse } from "next/server";
+import { getServiceSupabase } from "@/lib/supabase/service";
 
 // Arc Testnet contract addresses (from @circle-fin/x402-batching SDK)
 const ARC_TESTNET_NETWORK = "eip155:5042002";
@@ -28,11 +28,6 @@ const ARC_TESTNET_GATEWAY_WALLET = "0x0077777d7EBA4688BDeF3E311b846F25870A19B9";
 export const sellerAddress = process.env.SELLER_ADDRESS as `0x${string}`;
 
 const facilitator = new BatchFacilitatorClient();
-
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-);
 
 interface PaymentPayload {
   x402Version: number;
@@ -147,17 +142,20 @@ export function withGateway(
       ).toString();
       const payer = settleResult.payer ?? verifyResult.payer ?? "unknown";
 
-      const { error } = await supabase.from("payment_events").insert({
-        endpoint,
-        payer,
-        amount_usdc: amountUsdc,
-        network: requirements.network,
-        gateway_tx: settleResult.transaction ?? null,
-        raw: { requirements, settleResult },
-      });
+      const supabase = getServiceSupabase();
+      if (supabase) {
+        const { error } = await supabase.from("payment_events").insert({
+          endpoint,
+          payer,
+          amount_usdc: amountUsdc,
+          network: requirements.network,
+          gateway_tx: settleResult.transaction ?? null,
+          raw: { requirements, settleResult },
+        });
 
-      if (error) {
-        console.error("Failed to record payment event:", error.message);
+        if (error) {
+          console.error("Failed to record payment event:", error.message);
+        }
       }
 
       console.log(
