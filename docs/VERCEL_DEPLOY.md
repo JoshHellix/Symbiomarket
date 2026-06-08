@@ -24,14 +24,14 @@ npx vercel link
 npx vercel --prod
 ```
 
-**Production URL:** https://arc-nanopayments-dun.vercel.app/swarm
+**Production URL:** https://symbiomarket.vercel.app/swarm
 
 ---
 
 ## 2. Add storage on Vercel (required for live data)
 
 **Option A — Vercel Blob (fastest)**  
-1. [Vercel project → Storage](https://vercel.com/hellix-nebulla-s-projects/arc-nanopayments/stores)  
+1. [Vercel project → Storage](https://vercel.com/hellix-nebulla-s-projects/symbiomarket/stores)  
 2. Connect store **`symbio-live`** (or create + link) to **Production**  
 3. Vercel adds `BLOB_READ_WRITE_TOKEN` automatically → redeploy  
 
@@ -57,7 +57,7 @@ Redeploy after adding env vars: `npx vercel --prod`.
 ## 4. Local `.env` (repo root) — push to Vercel
 
 ```env
-SWARM_INGEST_URL=https://YOUR_APP.vercel.app/api/swarm/ingest
+SWARM_INGEST_URL=https://symbiomarket.vercel.app/api/swarm/ingest
 SWARM_INGEST_SECRET=same-secret-as-vercel
 ```
 
