@@ -2,7 +2,7 @@
  * Swarm + FHE state: local JSON (dev) | Upstash KV | Vercel Blob (prod).
  */
 
-import { head, put } from "@vercel/blob";
+import { get, put } from "@vercel/blob";
 import { readFile } from "fs/promises";
 import { join } from "path";
 import { Redis } from "@upstash/redis";
@@ -58,10 +58,10 @@ async function readLocalJson(filename: string): Promise<Record<string, unknown> 
 async function getBlobJson(pathname: string): Promise<Record<string, unknown> | null> {
   if (!hasBlob()) return null;
   try {
-    const meta = await head(pathname);
-    const res = await fetch(meta.url);
-    if (!res.ok) return null;
-    return (await res.json()) as Record<string, unknown>;
+    const result = await get(pathname, { access: "private", useCache: false });
+    if (!result) return null;
+    const text = await new Response(result.stream).text();
+    return JSON.parse(text) as Record<string, unknown>;
   } catch {
     return null;
   }
@@ -70,7 +70,7 @@ async function getBlobJson(pathname: string): Promise<Record<string, unknown> | 
 async function setBlobJson(pathname: string, data: unknown): Promise<void> {
   if (!hasBlob()) throw new Error("BLOB_READ_WRITE_TOKEN not configured");
   await put(pathname, JSON.stringify(data), {
-    access: "public",
+    access: "private",
     addRandomSuffix: false,
     contentType: "application/json",
   });
