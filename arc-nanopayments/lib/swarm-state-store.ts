@@ -72,6 +72,7 @@ async function setBlobJson(pathname: string, data: unknown): Promise<void> {
   await put(pathname, JSON.stringify(data), {
     access: "private",
     addRandomSuffix: false,
+    allowOverwrite: true,
     contentType: "application/json",
   });
 }
